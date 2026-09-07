@@ -1,0 +1,374 @@
+{
+  "refresh_interval_seconds": 1.0,
+  "active_profile": "Standard",
+  "profiles": {
+    "Standard": {
+      "kraken_pump": {
+        "mode": "manual",
+        "manual_value": 100,
+        "temp_device_name": "kraken2023",
+        "temp_channel": 1,
+        "curve": [
+          [
+            25,
+            50
+          ],
+          [
+            35,
+            60
+          ],
+          [
+            45,
+            75
+          ],
+          [
+            50,
+            90
+          ],
+          [
+            55,
+            100
+          ]
+        ]
+      },
+      "cpu_radiator_fans": {
+        "mode": "curve",
+        "manual_value": 40,
+        "temp_device_name": "k10temp",
+        "temp_channel": 1,
+        "curve": [
+          [
+            30,
+            25
+          ],
+          [
+            50,
+            40
+          ],
+          [
+            65,
+            60
+          ],
+          [
+            75,
+            80
+          ],
+          [
+            85,
+            100
+          ]
+        ]
+      },
+      "rear_top_fans": {
+        "mode": "curve",
+        "manual_value": 35,
+        "temp_device_name": "k10temp",
+        "temp_channel": 1,
+        "curve": [
+          [
+            30,
+            20
+          ],
+          [
+            50,
+            35
+          ],
+          [
+            65,
+            55
+          ],
+          [
+            75,
+            75
+          ],
+          [
+            85,
+            100
+          ]
+        ]
+      },
+      "bottom_fan": {
+        "mode": "curve",
+        "manual_value": 35,
+        "temp_device_name": "k10temp",
+        "temp_channel": 1,
+        "curve": [
+          [
+            30,
+            20
+          ],
+          [
+            50,
+            35
+          ],
+          [
+            65,
+            55
+          ],
+          [
+            75,
+            75
+          ],
+          [
+            85,
+            100
+          ]
+        ]
+      }
+    },
+    "Silent": {
+      "kraken_pump": {
+        "mode": "curve",
+        "manual_value": 50,
+        "temp_device_name": "kraken2023",
+        "temp_channel": 1,
+        "curve": [
+          [
+            25,
+            40
+          ],
+          [
+            35,
+            50
+          ],
+          [
+            45,
+            65
+          ],
+          [
+            50,
+            80
+          ],
+          [
+            55,
+            100
+          ]
+        ]
+      },
+      "cpu_radiator_fans": {
+        "mode": "curve",
+        "manual_value": 30,
+        "temp_device_name": "k10temp",
+        "temp_channel": 1,
+        "curve": [
+          [
+            30,
+            15
+          ],
+          [
+            50,
+            30
+          ],
+          [
+            65,
+            45
+          ],
+          [
+            75,
+            65
+          ],
+          [
+            85,
+            90
+          ]
+        ]
+      },
+      "rear_top_fans": {
+        "mode": "curve",
+        "manual_value": 25,
+        "temp_device_name": "k10temp",
+        "temp_channel": 1,
+        "curve": [
+          [
+            30,
+            15
+          ],
+          [
+            50,
+            25
+          ],
+          [
+            65,
+            40
+          ],
+          [
+            75,
+            60
+          ],
+          [
+            85,
+            90
+          ]
+        ]
+      },
+      "bottom_fan": {
+        "mode": "curve",
+        "manual_value": 25,
+        "temp_device_name": "k10temp",
+        "temp_channel": 1,
+        "curve": [
+          [
+            30,
+            15
+          ],
+          [
+            50,
+            25
+          ],
+          [
+            65,
+            40
+          ],
+          [
+            75,
+            60
+          ],
+          [
+            85,
+            90
+          ]
+        ]
+      }
+    },
+    "Performance": {
+      "kraken_pump": {
+        "mode": "curve",
+        "manual_value": 80,
+        "temp_device_name": "kraken2023",
+        "temp_channel": 1,
+        "curve": [
+          [
+            25,
+            70
+          ],
+          [
+            35,
+            80
+          ],
+          [
+            45,
+            90
+          ],
+          [
+            50,
+            100
+          ],
+          [
+            55,
+            100
+          ]
+        ]
+      },
+      "cpu_radiator_fans": {
+        "mode": "curve",
+        "manual_value": 50,
+        "temp_device_name": "k10temp",
+        "temp_channel": 1,
+        "curve": [
+          [
+            30,
+            40
+          ],
+          [
+            50,
+            55
+          ],
+          [
+            65,
+            75
+          ],
+          [
+            75,
+            90
+          ],
+          [
+            85,
+            100
+          ]
+        ]
+      },
+      "rear_top_fans": {
+        "mode": "curve",
+        "manual_value": 45,
+        "temp_device_name": "k10temp",
+        "temp_channel": 1,
+        "curve": [
+          [
+            30,
+            35
+          ],
+          [
+            50,
+            50
+          ],
+          [
+            65,
+            70
+          ],
+          [
+            75,
+            85
+          ],
+          [
+            85,
+            100
+          ]
+        ]
+      },
+      "bottom_fan": {
+        "mode": "curve",
+        "manual_value": 45,
+        "temp_device_name": "k10temp",
+        "temp_channel": 1,
+        "curve": [
+          [
+            30,
+            35
+          ],
+          [
+            50,
+            50
+          ],
+          [
+            65,
+            70
+          ],
+          [
+            75,
+            85
+          ],
+          [
+            85,
+            100
+          ]
+        ]
+      }
+    }
+  },
+  "fans": {
+    "kraken_pump": {
+      "label": "Kraken AIO Pump",
+      "device_name": "kraken2023",
+      "pwm_channel": 1,
+      "fan_channel": 1
+    },
+    "cpu_radiator_fans": {
+      "label": "CPU Radiator Fans",
+      "device_name": "nct*",
+      "pwm_channel": 2,
+      "fan_channel": 2
+    },
+    "rear_top_fans": {
+      "label": "Rear & Top Fans",
+      "device_name": "nct*",
+      "pwm_channel": 1,
+      "fan_channel": 1
+    },
+    "bottom_fan": {
+      "label": "Bottom Fan",
+      "device_name": "nct*",
+      "pwm_channel": 3,
+      "fan_channel": 3
+    }
+  }
+}

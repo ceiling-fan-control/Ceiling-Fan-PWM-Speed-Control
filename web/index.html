@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirController - PC Fan Control</title>
+    <!-- Modern Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="brand">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" class="spin-logo"><circle cx="12" cy="12" r="10"></circle><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <div class="brand-text">
+                    <h1>AirController</h1>
+                    <p>PWM hardware monitor & fan speed regulator</p>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <!-- Status Badge -->
+                <div class="status-badge" id="daemon-status">
+                    <span class="pulse-indicator green"></span>
+                    <span class="status-text">Daemon Connected</span>
+                </div>
+                
+                <!-- Profile Control -->
+                <div class="profile-selector-container">
+                    <label for="active-profile-select">Active Profile</label>
+                    <select id="active-profile-select" class="glass-select">
+                        <option value="Standard">Standard</option>
+                        <option value="Silent">Silent</option>
+                        <option value="Performance">Performance</option>
+                    </select>
+                </div>
+                
+                <!-- Settings Trigger -->
+                <button type="button" class="glass-btn btn-sm btn-accent" id="settings-toggle-btn" onclick="toggleSettingsModal(true)">⚙️ Settings</button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            
+            <!-- Left Side: Status and Gauges -->
+            <section class="dashboard-panel">
+                <!-- Temperatures Grid -->
+                <div class="section-header">
+                    <h2>System Temperatures</h2>
+                </div>
+                <div class="temp-cards-grid">
+                    <!-- CPU Temp -->
+                    <div class="glass-card temp-card" id="card-temp-cpu">
+                        <div class="card-header">
+                            <span class="label">CPU Core (Tctl)</span>
+                            <span class="icon red-glow">🌡️</span>
+                        </div>
+                        <div class="value-display">
+                            <span class="value" id="temp-cpu-val">--</span><span class="unit">°C</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar red-gradient" id="temp-cpu-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Coolant Temp -->
+                    <div class="glass-card temp-card" id="card-temp-coolant">
+                        <div class="card-header">
+                            <span class="label">AIO Coolant</span>
+                            <span class="icon blue-glow">💧</span>
+                        </div>
+                        <div class="value-display">
+                            <span class="value" id="temp-coolant-val">--</span><span class="unit">°C</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar blue-gradient" id="temp-coolant-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- GPU Temp -->
+                    <div class="glass-card temp-card" id="card-temp-gpu">
+                        <div class="card-header">
+                            <span class="label">GPU Edge</span>
+                            <span class="icon green-glow">🎮</span>
+                        </div>
+                        <div class="value-display">
+                            <span class="value" id="temp-gpu-val">--</span><span class="unit">°C</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar green-gradient" id="temp-gpu-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fans Overview Grid -->
+                <div class="section-header">
+                    <h2>Active Fan Outputs</h2>
+                </div>
+                <div class="fans-grid" id="fans-container">
+                    <!-- Dynamic widgets populated by JS -->
+                    <div class="loading-state">Scanning hardware monitoring channels...</div>
+                </div>
+            </section>
+
+            <!-- Right Side: Interactive Fan Curve Editor -->
+            <section class="editor-panel">
+                <div class="glass-card editor-card">
+                    <div class="editor-card-header">
+                        <h2>Fan Curve Configuration</h2>
+                        <span class="selected-fan-label" id="editor-active-fan-name">Select a Fan to Edit</span>
+                    </div>
+
+                    <div class="fan-selector-tabs" id="editor-fan-tabs">
+                        <!-- Tabs populated dynamically by JS -->
+                    </div>
+
+                    <div class="editor-body">
+                        <!-- Control Mode Toggle -->
+                        <div class="control-group mode-toggle-group">
+                            <label>Control Mode</label>
+                            <div class="segmented-control">
+                                <button type="button" class="segment-btn active" id="mode-curve-btn" onclick="setEditorMode('curve')">Automatic Curve</button>
+                                <button type="button" class="segment-btn" id="mode-manual-btn" onclick="setEditorMode('manual')">Manual Speed</button>
+                            </div>
+                        </div>
+
+                        <!-- Manual Speed Slider Panel -->
+                        <div class="editor-section hidden" id="manual-speed-section">
+                            <div class="control-group">
+                                <div class="slider-header">
+                                    <label for="manual-pwm-slider">Target PWM Speed</label>
+                                    <span class="slider-value" id="manual-pwm-val">50%</span>
+                                </div>
+                                <input type="range" id="manual-pwm-slider" min="0" max="100" value="50" class="glass-slider">
+                            </div>
+                            <div class="info-alert">
+                                💡 Fan operates at a constant fixed speed regardless of temperature fluctuations.
+                            </div>
+                        </div>
+
+                        <!-- Curve Graph Editor Panel -->
+                        <div class="editor-section" id="curve-speed-section">
+                            <!-- Temp Source selection -->
+                            <div class="control-group source-select-group">
+                                <label for="temp-source-select">Temperature Sensor Source</label>
+                                <select id="temp-source-select" class="glass-select">
+                                    <option value="k10temp:1">AMD CPU Core (Tctl)</option>
+                                    <option value="kraken2023:1">AIO Coolant Temperature</option>
+                                    <option value="amdgpu:1">AMD GPU Edge Temperature</option>
+                                    <option value="amdgpu:2">AMD GPU Junction Temperature</option>
+                                </select>
+                            </div>
+
+                            <!-- Canvas Plotter -->
+                            <div class="canvas-container">
+                                <canvas id="curve-canvas" width="500" height="300"></canvas>
+                                <div class="canvas-instructions">
+                                    <span>Drag points to adjust. Double-click line to add points. Right-click a point to delete it.</span>
+                                </div>
+                            </div>
+
+                            <!-- Curve Coordinates Table -->
+                            <div class="points-editor">
+                                <div class="points-header">
+                                    <h3>Curve Nodes</h3>
+                                    <button class="glass-btn btn-sm btn-accent" id="add-point-btn">＋ Add Point</button>
+                                </div>
+                                <div class="points-table-container">
+                                    <table class="points-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Temp (°C)</th>
+                                                <th>PWM (%)</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="curve-points-tbody">
+                                            <!-- Dynamically inserted in JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions footer -->
+                        <div class="editor-footer">
+                            <button type="button" class="glass-btn btn-secondary" onclick="resetEditor()">Reset Changes</button>
+                            <button type="button" class="glass-btn btn-primary" onclick="saveEditorSettings()">Apply Configuration</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    </div>
+
+    <!-- Hardware Settings Modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="glass-card modal-container">
+            <div class="modal-header">
+                <h2>Hardware Settings & Mapping</h2>
+                <button class="close-btn" onclick="toggleSettingsModal(false)">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Left Section: Scanned Sensors -->
+                <div class="modal-column scanned-column">
+                    <div class="column-header">
+                        <h3>Discovered Hardware</h3>
+                        <button class="glass-btn btn-sm btn-accent" onclick="scanHardware()">🔄 Scan Hardware</button>
+                    </div>
+                    <div class="scanned-list" id="scanned-devices-list">
+                        <div class="loading-state">Click 'Scan Hardware' to discover channels.</div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Mapped Targets -->
+                <div class="modal-column mapping-column">
+                    <div class="column-header">
+                        <h3>Mapped Fan Targets</h3>
+                        <button class="glass-btn btn-sm btn-accent" onclick="addNewMappedFan()">＋ Add Fan</button>
+                    </div>
+                    
+                    <div class="mapping-table-wrapper">
+                        <table class="mapping-table">
+                            <thead>
+                                <tr>
+                                    <th>ID (Unique)</th>
+                                    <th>Display Label</th>
+                                    <th>Controller / Device</th>
+                                    <th>PWM</th>
+                                    <th>RPM Sensor</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mapped-fans-tbody">
+                                <!-- Populated dynamically by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="glass-btn btn-secondary" onclick="toggleSettingsModal(false)">Cancel</button>
+                <button class="glass-btn btn-primary" onclick="saveHardwareMapping()">Save & Apply Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast-notification hidden">
+        <span id="toast-message">Configuration applied successfully!</span>
+    </div>
+
+    <!-- Main Logic -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

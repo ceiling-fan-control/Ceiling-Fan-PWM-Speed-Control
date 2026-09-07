@@ -1,0 +1,13 @@
+[Unit]
+Description=PC PWM Fan Controller Daemon
+After=network.target lm-sensors.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/daniel/Apps/air-controller
+ExecStart=/usr/bin/python3 /home/daniel/Apps/air-controller/src/main.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

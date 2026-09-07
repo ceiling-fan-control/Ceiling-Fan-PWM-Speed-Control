@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fan_controller"
+version = "0.1.0"
+description = "A Linux fan controller with a GUI"
+readme = "README.md"
+authors = [
+  { name = "Chengotic", email = "chengotic@example.com" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "PyQt6",
+    "pyqtgraph",
+    "numpy",
+]
+
+[project.scripts]
+fan-controller = "fan_controller.main:main_cli"
+fan-controller-gui = "fan_controller.main:main_gui"
+
+[project.urls]
+"Homepage" = "https://github.com/chengotic/fan_controller"
